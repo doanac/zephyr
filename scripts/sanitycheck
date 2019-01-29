@@ -208,12 +208,11 @@ sys.path.insert(0, os.path.join(ZEPHYR_BASE, "scripts/"))
 
 
 VERBOSE = 0
-LAST_SANITY = os.path.join(ZEPHYR_BASE, "scripts", "sanity_chk",
-                           "last_sanity.csv")
-LAST_SANITY_XUNIT = os.path.join(ZEPHYR_BASE, "scripts", "sanity_chk",
-                                 "last_sanity.xml")
-RELEASE_DATA = os.path.join(ZEPHYR_BASE, "scripts", "sanity_chk",
-                            "sanity_last_release.csv")
+SANITY_RESULTS = os.environ.get(
+    'SANITY_RESULTS', os.path.join(ZEPHYR_BASE, "scripts", "sanity_chk"))
+LAST_SANITY = os.path.join(SANITY_RESULTS, "last_sanity.csv")
+LAST_SANITY_XUNIT = os.path.join(SANITY_RESULTS, "last_sanity.xml")
+RELEASE_DATA = os.path.join(SANITY_RESULTS, "sanity_last_release.csv")
 JOBS = multiprocessing.cpu_count() * 2
 
 if os.isatty(sys.stdout.fileno()):
