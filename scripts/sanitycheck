@@ -644,12 +644,16 @@ class DeviceHandler(Handler):
     def handle(self):
         out_state = "failed"
 
-        if options.ninja:
-            generator_cmd = "ninja"
+        if options.west_flash_option:
+            command = ["west", "flash", "--skip-rebuild", "-d", self.outdir]
+            command.extend(options.west_flash_option)
         else:
-            generator_cmd = "make"
+            if options.ninja:
+                generator_cmd = "ninja"
+            else:
+                generator_cmd = "make"
 
-        command = [generator_cmd, "-C", self.outdir, "flash"]
+            command = [generator_cmd, "-C", self.outdir, "flash"]
 
         device = options.device_serial
         ser = serial.Serial(
@@ -2881,6 +2885,18 @@ def parse_arguments():
         "cmake -DUSE_CCACHE=0"
 
         which will ultimately disable ccache.
+        """
+    )
+    parser.add_argument(
+        "--west-flash-option", action="append", default=[],
+        help="""Extra options to pass to the "west flash" command when doing
+        running with --device-testing"
+
+        E.g
+         sanitycheck --device-testing --device-serial /dev/ttyACM0 \
+                     --west-flash-option="--board-id=foobar"
+        will translate to
+         west flash -- --board-id=foobar
         """
     )
     parser.add_argument("--gcov-tool", default="gcov",
